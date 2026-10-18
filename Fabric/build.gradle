@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+}
+
+base.archivesName = mod_id + "-fabric"
+version = "${minecraft_version}-${mod_version}"
+
+loom {
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+}
+
+dependencies {
+    // Common classes are merged into this jar below; the dependency is needed for
+    // compilation and for the dev run classpath.
+    implementation project(":Xplat")
+
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.layered() {
+        officialMojangMappings()
+        parchment("org.parchmentmc.data:parchment-${minecraft_version}:${mapping_version}@zip")
+    }
+
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+
+    // Common Event Wrapper classes are only needed at compile time; the loader specific
+    // Event Wrapper mod provides them at runtime.
+    def eventwrapper = file("${rootProject.projectDir}/libs/eventwrapper-${minecraft_version}-${eventwrapper_version}.jar")
+    if (eventwrapper.exists()) {
+        compileOnly files(eventwrapper)
+    } else {
+        compileOnly "curse.maven:event-wrapper-${eventwrapper_cf_project}:${eventwrapper_cf_file}"
+    }
+}
+
+processResources {
+    from project(":Xplat").sourceSets.main.resources
+}
+
+jar {
+    from project(":Xplat").sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}

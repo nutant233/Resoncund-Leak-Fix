@@ -1,0 +1,45 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/nutant233/ResoncundLeakFix/issues"
+
+[[mods]]
+modId = "resoncundleakfix"
+version = "1.0.0"
+displayName = "Resoncund Leak Fix"
+authors = "nutant233"
+description = '''
+Stops Extrabotany's Resoncund block entity from keeping unloaded worlds and players alive.
+
+ResoncundBlockEntity calls EventsWrapper.register(this) from every instance constructor. Event Wrapper puts one lambda per annotated method on the global event bus, but its unregister() passes the block entity while the bus key is the lambda, so the registration is never removed. Every world that ever contained a Resoncund flower therefore stays reachable through lambda -> block entity -> level.
+
+This mod replaces the per-instance registration entirely: a single global listener is registered and the flowers are held in a weak-reference list, so unloaded worlds are garbage collected normally.
+'''
+
+[[dependencies.resoncundleakfix]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.resoncundleakfix]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.20.2)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.resoncundleakfix]]
+modId = "eventwrapper"
+mandatory = false
+versionRange = "[1.0.0,)"
+ordering = "AFTER"
+side = "BOTH"
+
+[[dependencies.resoncundleakfix]]
+modId = "extrabotany"
+mandatory = false
+versionRange = "[1.0.0,)"
+ordering = "AFTER"
+side = "BOTH"

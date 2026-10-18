@@ -1,0 +1,56 @@
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'idea'
+
+    java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+    repositories {
+        mavenCentral()
+
+        maven {
+            name = 'Sponge / Mixin'
+            url = 'https://repo.spongepowered.org/repository/maven-public/'
+        }
+
+        // Event Wrapper comes from CurseForge (maven.lounode.top is down).
+        exclusiveContent {
+            forRepository {
+                maven {
+                    name = 'CurseMaven'
+                    url = 'https://cursemaven.com'
+                }
+            }
+            filter {
+                includeGroup 'curse.maven'
+            }
+        }
+
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        maven {
+            name = 'NeoForged'
+            url = 'https://maven.neoforged.net/releases'
+        }
+        maven { url = 'https://maven.parchmentmc.org' }
+    }
+
+    tasks.withType(JavaCompile).configureEach {
+        options.encoding = 'UTF-8'
+        options.release = 17
+    }
+
+    tasks.withType(GenerateModuleMetadata).configureEach {
+        enabled = false
+    }
+
+    jar {
+        exclude "**/*.bat"
+        exclude "**/*.psd"
+        exclude "**/*.ase"
+        exclude "**/*.exe"
+        exclude "**/unused"
+        exclude ".cache"
+    }
+}

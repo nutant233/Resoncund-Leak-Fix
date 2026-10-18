@@ -1,0 +1,60 @@
+plugins {
+    id 'java'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.78'
+}
+
+base.archivesName = mod_id + "-forge"
+version = "${minecraft_version}-${mod_version}"
+
+legacyForge {
+    version = "${minecraft_version}-${forge_version}"
+
+    parchment {
+        minecraftVersion = minecraft_version
+        mappingsVersion = mapping_version
+    }
+
+    runs {
+        client {
+            client()
+        }
+        server {
+            server()
+        }
+    }
+}
+
+dependencies {
+    // Common classes are merged into this jar below; the dependency is needed for
+    // compilation and for the dev run classpath.
+    implementation project(":Xplat")
+
+    def eventwrapper = file("${rootProject.projectDir}/libs/eventwrapper-${minecraft_version}-${eventwrapper_version}.jar")
+    if (eventwrapper.exists()) {
+        compileOnly files(eventwrapper)
+    } else {
+        compileOnly "curse.maven:event-wrapper-${eventwrapper_cf_project}:${eventwrapper_cf_file}"
+    }
+
+    compileOnly "org.spongepowered:mixin:0.8.5"
+}
+
+processResources {
+    from project(":Xplat").sourceSets.main.resources
+}
+
+jar {
+    from project(":Xplat").sourceSets.main.output
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+
+    manifest {
+        attributes([
+                "MixinConfigs"           : "resoncundleakfix.mixins.json",
+                "Specification-Title"    : mod_name,
+                "Specification-Version"  : mod_version,
+                "Implementation-Title"   : base.archivesName.get(),
+                "Implementation-Version" : archiveVersion.get()
+        ])
+    }
+    finalizedBy 'reobfJar'
+}

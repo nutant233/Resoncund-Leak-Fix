@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "id": "resoncundleakfix",
+  "version": "1.0.0",
+  "name": "Resoncund Leak Fix",
+  "description": "Stops Extrabotany's Resoncund block entity from keeping unloaded worlds and players alive.",
+  "authors": [
+    "nutant233"
+  ],
+  "license": "MIT",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "io.github.nutant.resoncundleakfix.fabric.ResoncundLeakFixFabric"
+    ]
+  },
+  "mixins": [
+    "resoncundleakfix.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.15.0",
+    "minecraft": "~1.20.1"
+  },
+  "suggests": {
+    "extrabotany": "*",
+    "eventwrapper": "*"
+  }
+}

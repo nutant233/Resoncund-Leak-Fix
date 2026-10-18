@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id 'net.neoforged.moddev.legacyforge' version '2.0.78'
+}
+
+base.archivesName = mod_id + "-common"
+version = "${minecraft_version}-${mod_version}"
+
+legacyForge {
+    mcpVersion = minecraft_version
+
+    parchment {
+        minecraftVersion = minecraft_version
+        mappingsVersion = mapping_version
+    }
+}
+
+dependencies {
+    def eventwrapper = file("${rootProject.projectDir}/libs/eventwrapper-${minecraft_version}-${eventwrapper_version}.jar")
+    if (eventwrapper.exists()) {
+        // Vendored CurseForge artifact (event-wrapper project ${eventwrapper_cf_project}, file ${eventwrapper_cf_file})
+        compileOnly files(eventwrapper)
+    } else {
+        compileOnly "curse.maven:event-wrapper-${eventwrapper_cf_project}:${eventwrapper_cf_file}"
+    }
+
+    compileOnly "org.spongepowered:mixin:0.8.5"
+    compileOnly 'org.jetbrains:annotations:24.0.1'
+}
